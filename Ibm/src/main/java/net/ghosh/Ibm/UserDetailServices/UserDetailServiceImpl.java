@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import net.ghosh.IbmBackend.Util;
 import net.ghosh.IbmBackend.dao.UserDao;
 import net.ghosh.IbmBackend.dto.CompUser;
+import net.ghosh.IbmBackend.dto.Sh_User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,13 +33,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Transactional
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException {
-		List<CompUser> compUser = userDao.getUserByEmailId(userName);
+		List<Sh_User> compUser = userDao.getUserByEmailId(userName);
 		System.out.println("user is [" + compUser + "]");
 		if (compUser == null) {
 			return null;
 		}
 
-		CompUser user = compUser.get(0);
+		Sh_User user = compUser.get(0);
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("Admin"));
 

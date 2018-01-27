@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.ghosh.IbmBackend.dao.UserDao;
 import net.ghosh.IbmBackend.dto.CompUser;
+import net.ghosh.IbmBackend.dto.Sh_User;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -19,8 +20,8 @@ public class UserDaoImpl implements UserDao {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<CompUser> userLists() {
-		String stringquery = "FROM CompUser";
+	public List<Sh_User> userLists() {
+		String stringquery = "FROM Sh_User";
 		Query query = sessionFactory.getCurrentSession().createQuery(
 				stringquery);
 		return query.getResultList();
@@ -28,7 +29,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public boolean addUser(CompUser compUser) {
+	public boolean addUser(Sh_User compUser) {
 		try {
 			sessionFactory.getCurrentSession().persist(compUser);
 			return true;
@@ -37,17 +38,24 @@ public class UserDaoImpl implements UserDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<CompUser> getUserByEmailId(String mailId) {
-		String stringquery = "FROM CompUser WHERE email=:email";
+	public List<Sh_User> getUserByEmailId(String mailId) {
+		String stringquery = "FROM Sh_User WHERE mailId=:mailId";
 		Query query = sessionFactory.getCurrentSession().createQuery(
 				stringquery);
-		query.setParameter("email", mailId);
-		return query.getResultList();
+		query.setParameter("mailId", mailId);
+		List<Sh_User> sh_Users = query.getResultList();
+		System.out.println("users are [" + sh_Users + "]");
+		if (sh_Users.size() > 0) {
+			return sh_Users;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public boolean updateUser(CompUser compUser) {
+	public boolean updateUser(Sh_User compUser) {
 		try {
 			sessionFactory.getCurrentSession().update(compUser);
 			return true;
@@ -57,7 +65,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public boolean deleteUser(CompUser compUser) {
+	public boolean deleteUser(Sh_User compUser) {
 		try {
 			sessionFactory.getCurrentSession().update(compUser);
 			return true;
@@ -67,8 +75,8 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public CompUser getUserById(long id) {
-		return sessionFactory.getCurrentSession().get(CompUser.class,
+	public Sh_User getUserById(long id) {
+		return sessionFactory.getCurrentSession().get(Sh_User.class,
 				Long.valueOf(id));
 	}
 }

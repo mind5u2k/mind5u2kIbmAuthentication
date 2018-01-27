@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import net.ghosh.Ibm.bluePageAuthentication.IntranetAuth.IntranetAuth;
+import net.ghosh.Ibm.util.Util;
 import net.ghosh.IbmBackend.dao.UserDao;
-import net.ghosh.IbmBackend.dto.CompUser;
+import net.ghosh.IbmBackend.dto.Sh_User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,12 +32,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		String username = auth.getName();
 		String password = auth.getCredentials().toString();
 
-		List<CompUser> compUsers = userDao.getUserByEmailId(username);
+		List<Sh_User> compUsers = userDao.getUserByEmailId(username);
 		if (compUsers == null) {
 			return null;
 		}
-		CompUser user = compUsers.get(0);
-		boolean authenticationStatus = false;
+		Sh_User user = compUsers.get(0);
+		boolean authenticationStatus = true;
 		try {
 			IntranetAuth intranetAuth = new IntranetAuth();
 			authenticationStatus = intranetAuth.isLDAPUserWithUserEmail(
@@ -47,7 +48,42 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 		if (authenticationStatus) {
 			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			authorities.add(new SimpleGrantedAuthority("Admin"));
+
+			if (compUsers.size() == 1) {
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_SUPERADMIN));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities
+							.add(new SimpleGrantedAuthority(Util.ROLE_ADMIN));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_PASS_OWNER));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_AUTH_READERS));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_PLATFORM_HEAD));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_COMPLIANCE));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_CUSTOMER_DELEGATE));
+				}
+				if (user.getAdmin().equals(Util.ROLE_ASSIGNED)) {
+					authorities.add(new SimpleGrantedAuthority(
+							Util.ROLE_W3_MANAGER));
+				}
+			}
+
 			return new UsernamePasswordAuthenticationToken(username, password,
 					authorities);
 		} else {

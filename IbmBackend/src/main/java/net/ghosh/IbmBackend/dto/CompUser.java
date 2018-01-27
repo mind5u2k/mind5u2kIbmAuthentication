@@ -1,11 +1,9 @@
 package net.ghosh.IbmBackend.dto;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
 public class CompUser {
 
 	@Id
@@ -18,7 +16,6 @@ public class CompUser {
 	private String role;
 	private String state;
 	private boolean enabled = true;
-	
 
 	public long getId() {
 		return id;

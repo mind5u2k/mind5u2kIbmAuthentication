@@ -2,11 +2,14 @@ package net.ghosh.Ibm.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.ghosh.Ibm.exception.ProductNotFoundException;
+import net.ghosh.Ibm.model.UserModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -22,6 +25,9 @@ public class PageController {
 	private static final Logger logger = LoggerFactory
 			.getLogger(PageController.class);
 
+	@Autowired
+	private HttpSession session;
+
 	@RequestMapping(value = { "/", "/home", "/index" })
 	public ModelAndView index(
 			@RequestParam(name = "logout", required = false) String logout) {
@@ -31,14 +37,33 @@ public class PageController {
 		logger.info("Inside PageController index method - INFO");
 		logger.debug("Inside PageController index method - DEBUG");
 
-		// passing the list of categories
-
 		if (logout != null) {
 			mv.addObject("message", "You have successfully logged out!");
 		}
 
-		mv.addObject("userClickHome", true);
+		UserModel userModel = (UserModel) session.getAttribute("userModel");
+		System.out.println("usermodel is [" + userModel + "]");
+		System.out.println("usermodel country size is ["
+				+ userModel.getCountries().size() + "]");
+
+		if (userModel.getCountries().size() > 1) {
+			mv.addObject("userClickCountry", true);
+		} else {
+			mv.addObject("userClickHome", true);
+		}
+
 		return mv;
+	}
+
+	@RequestMapping(value = "/perform-logout")
+	public String performLogout(HttpServletRequest request,
+			HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		if (auth != null) {
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		return "redirect:/login?logout";
 	}
 
 	@RequestMapping(value = "/about")

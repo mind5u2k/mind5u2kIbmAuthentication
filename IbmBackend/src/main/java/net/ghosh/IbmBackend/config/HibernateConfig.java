@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class HibernateConfig {
 
-	private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/ibmauthentication?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";
+	private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/sharedid?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";
 	private final static String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
 	private final static String DATABASE_DIALECT = "org.hibernate.dialect.MySQL5Dialect";
 	private final static String DATABASE_USERNAME = "root";
@@ -48,7 +48,9 @@ public class HibernateConfig {
 		properties.put("hibernate.dialect", DATABASE_DIALECT);
 		properties.put("hibernate.show_sql", "false");
 		properties.put("hibernate.format_sql", "true");
-		properties.put("hibernate.hbm2ddl.auto", "update");
+		properties.put("hibernate.c3p0.min_size", 10);
+		properties.put("hibernate.c3p0.max_size", 30);
+		properties.put("hibernate.c3p0.timeout", 300);
 		return properties;
 	}
 

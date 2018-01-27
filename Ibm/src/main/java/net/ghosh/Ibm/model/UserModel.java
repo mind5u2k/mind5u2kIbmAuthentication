@@ -1,6 +1,9 @@
 package net.ghosh.Ibm.model;
 
 import java.io.Serializable;
+import java.util.List;
+
+import net.ghosh.IbmBackend.dto.Sh_Countries;
 
 public class UserModel implements Serializable {
 
@@ -14,6 +17,7 @@ public class UserModel implements Serializable {
 	private String fullName;
 	private String email;
 	private String role;
+	private List<Sh_Countries> countries;
 
 	public long getId() {
 		return id;
@@ -51,6 +55,14 @@ public class UserModel implements Serializable {
 	public String toString() {
 		return "UserModel [id=" + id + ", fullName=" + fullName + ", email="
 				+ email + ", role=" + role + "]";
+	}
+
+	public List<Sh_Countries> getCountries() {
+		return countries;
+	}
+
+	public void setCountries(List<Sh_Countries> countries) {
+		this.countries = countries;
 	}
 
 }
